@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, FileText, Laptop, TrendingUp, Phone, CheckCircle, Users, Award, Briefcase, Clock, ChevronRight, Quote } from 'lucide-react';
+import { ArrowRight, FileText, Laptop, TrendingUp, Phone, CheckCircle, Users, Award, Briefcase, Clock, ChevronRight, Quote, Coins, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import AnimatedCounter from '@/components/AnimatedCounter';
@@ -12,17 +14,27 @@ const services = [
     icon: FileText,
     title: 'Consultanță Granturi',
     description: 'Identificăm cele mai potrivite surse de finanțare pentru afacerea ta și te ghidăm pas cu pas în procesul de aplicare.',
+    image: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=500&h=350&fit=crop',
   },
   {
     icon: Laptop,
     title: 'Elaborare Proiecte',
     description: 'Pregătim documentație completă și planuri de afaceri profesionale care maximizează șansele de aprobare.',
+    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&h=350&fit=crop',
   },
   {
     icon: TrendingUp,
     title: 'Management Proiecte',
     description: 'Te ghidăm în implementarea și raportarea finanțărilor pentru a asigura succesul proiectului tău.',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=350&fit=crop',
   },
+];
+
+const partners = [
+  { name: 'USAID', logo: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=150&h=80&fit=crop' },
+  { name: 'EU Moldova', logo: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=150&h=80&fit=crop' },
+  { name: 'UNDP', logo: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=150&h=80&fit=crop' },
+  { name: 'World Bank', logo: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=150&h=80&fit=crop' },
 ];
 
 const programs = [
@@ -127,7 +139,49 @@ const steps = [
   },
 ];
 
+type Program = typeof programs[0];
+
 const Index = () => {
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    company: '',
+    message: '',
+  });
+
+  const handleOpenModal = (program: Program) => {
+    setSelectedProgram(program);
+    setIsModalOpen(true);
+    setIsSubmitted(false);
+    setFormData({ name: '', email: '', phone: '', company: '', message: '' });
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedProgram(null);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    setIsSubmitting(false);
+    setIsSubmitted(true);
+  };
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -194,15 +248,79 @@ const Index = () => {
           <div className="grid md:grid-cols-3 gap-8">
             {services.map((service, index) => (
               <RevealOnScroll key={service.title} delay={index * 100}>
-                <div className="card-service h-full text-center group">
-                  <div className="icon-container-lg mx-auto mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                    <service.icon className="w-8 h-8" />
+                <div className="bg-card rounded-2xl overflow-hidden shadow-card border border-border/50 hover:shadow-card-hover hover:-translate-y-2 transition-all h-full group">
+                  <div className="relative h-48 overflow-hidden">
+                    <img 
+                      src={service.image} 
+                      alt={service.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute bottom-4 left-4">
+                      <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                        <service.icon className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="mb-4">{service.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed">{service.description}</p>
+                  <div className="p-6 text-center">
+                    <h3 className="mb-3">{service.title}</h3>
+                    <p className="text-muted-foreground leading-relaxed">{service.description}</p>
+                  </div>
                 </div>
               </RevealOnScroll>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* About Section with Image */}
+      <section className="section-padding bg-muted/50">
+        <div className="container-custom">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <RevealOnScroll>
+              <div className="relative">
+                <img 
+                  src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=500&fit=crop"
+                  alt="Echipa de consultanți"
+                  className="rounded-2xl shadow-xl w-full"
+                />
+                <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground p-6 rounded-2xl shadow-lg hidden md:block">
+                  <p className="text-3xl font-bold">8+</p>
+                  <p className="text-sm">Ani experiență</p>
+                </div>
+              </div>
+            </RevealOnScroll>
+            <RevealOnScroll delay={200}>
+              <span className="badge-primary mb-4">Despre Noi</span>
+              <h2 className="mb-6">Partenerul Tău de Încredere pentru Finanțări</h2>
+              <p className="text-muted-foreground text-lg mb-6 leading-relaxed">
+                Consultanța Afaceri este liderul în domeniul consultanței pentru accesarea finanțărilor nerambursabile în Republica Moldova. Cu o experiență de peste 8 ani, am ajutat sute de antreprenori să-și transforme visele în realitate.
+              </p>
+              <div className="grid grid-cols-2 gap-6 mb-8">
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-6 h-6 text-secondary" />
+                  <span className="font-medium">Consultanță Personalizată</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-6 h-6 text-secondary" />
+                  <span className="font-medium">Expertiză Dovedită</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-6 h-6 text-secondary" />
+                  <span className="font-medium">Suport Continuu</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-6 h-6 text-secondary" />
+                  <span className="font-medium">Rezultate Garantate</span>
+                </div>
+              </div>
+              <Button asChild className="btn-primary px-8">
+                <Link to="/antreprenori">
+                  Află Mai Multe
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Link>
+              </Button>
+            </RevealOnScroll>
           </div>
         </div>
       </section>
@@ -238,17 +356,159 @@ const Index = () => {
                     </div>
                   </div>
                   <div className="p-4 pt-0">
-                    <Button asChild variant="outline" className="w-full group">
-                      <Link to={`/granturi/${program.id}`}>
-                        Află mai mult
-                        <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                      </Link>
+                    <Button 
+                      onClick={() => handleOpenModal(program)}
+                      className="w-full btn-primary group"
+                    >
+                      Aplică Acum
+                      <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </div>
                 </div>
               </RevealOnScroll>
             ))}
           </div>
+
+          {/* Application Modal */}
+          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="text-lg">
+                  {isSubmitted ? 'Cerere Trimisă!' : `Aplică la: ${selectedProgram?.title}`}
+                </DialogTitle>
+              </DialogHeader>
+              
+              {isSubmitted ? (
+                <div className="text-center py-6">
+                  <div className="w-14 h-14 rounded-full bg-secondary/10 flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="w-7 h-7 text-secondary" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-3">Mulțumim pentru aplicare!</h3>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    Am primit cererea ta pentru programul <strong>{selectedProgram?.title}</strong>. 
+                    Te vom contacta în cel mai scurt timp posibil.
+                  </p>
+                  <Button onClick={handleCloseModal} className="btn-primary">
+                    Închide
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  {selectedProgram && (
+                    <div className="bg-muted rounded-xl p-4 mb-6">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Coins className="w-4 h-4 text-secondary" />
+                        <span className="font-semibold text-secondary">{selectedProgram.amount}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-warning" />
+                        <span className="text-sm text-muted-foreground">Deadline: {selectedProgram.deadline}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                      <label htmlFor="modal-name" className="form-label">Nume complet *</label>
+                      <input
+                        type="text"
+                        id="modal-name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className="form-input"
+                        required
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="modal-email" className="form-label">Email *</label>
+                        <input
+                          type="email"
+                          id="modal-email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          className="form-input"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="modal-phone" className="form-label">Telefon *</label>
+                        <input
+                          type="tel"
+                          id="modal-phone"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          className="form-input"
+                          placeholder="+373..."
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="modal-company" className="form-label">Companie / Proiect</label>
+                      <input
+                        type="text"
+                        id="modal-company"
+                        name="company"
+                        value={formData.company}
+                        onChange={handleInputChange}
+                        className="form-input"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="modal-message" className="form-label">Descriere scurtă a proiectului</label>
+                      <textarea
+                        id="modal-message"
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        rows={3}
+                        className="form-input resize-none"
+                        placeholder="Spune-ne câteva cuvinte despre ideea ta..."
+                      />
+                    </div>
+
+                    <div className="flex gap-3 pt-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleCloseModal}
+                        className="flex-1"
+                      >
+                        Anulează
+                      </Button>
+                      <Button
+                        type="submit"
+                        className="flex-1 btn-primary"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? (
+                          <span className="flex items-center gap-2">
+                            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                            </svg>
+                            Se trimite...
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-2">
+                            Trimite Cererea
+                            <Send className="w-4 h-4" />
+                          </span>
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </>
+              )}
+            </DialogContent>
+          </Dialog>
 
           <div className="text-center mt-12">
             <Button asChild className="btn-primary px-8 py-6 text-lg">
@@ -360,7 +620,7 @@ const Index = () => {
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" className="btn-hero-outline text-lg">
+                <Button asChild className="btn-hero-outline text-lg">
                   <a href="tel:+37368115114">
                     <Phone className="mr-2 w-5 h-5" />
                     +373 68 115 114

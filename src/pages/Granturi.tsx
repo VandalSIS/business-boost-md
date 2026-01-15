@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Filter, ChevronRight, Clock, Coins, ArrowRight } from 'lucide-react';
+import { Search, Filter, ChevronRight, Clock, Coins, ArrowRight, X, CheckCircle, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import RevealOnScroll from '@/components/RevealOnScroll';
@@ -16,6 +17,7 @@ const allPrograms = [
     category: 'Tehnologie',
     type: 'extindere',
     value: 'medium',
+    image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=250&fit=crop',
   },
   {
     id: 2,
@@ -26,6 +28,7 @@ const allPrograms = [
     category: 'Agricultură',
     type: 'agricultură',
     value: 'medium',
+    image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&h=250&fit=crop',
   },
   {
     id: 3,
@@ -36,6 +39,7 @@ const allPrograms = [
     category: 'Social',
     type: 'startup',
     value: 'small',
+    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=250&fit=crop',
   },
   {
     id: 4,
@@ -46,6 +50,7 @@ const allPrograms = [
     category: 'Energie',
     type: 'extindere',
     value: 'large',
+    image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&h=250&fit=crop',
   },
   {
     id: 5,
@@ -56,6 +61,7 @@ const allPrograms = [
     category: 'Startup',
     type: 'startup',
     value: 'small',
+    image: 'https://images.unsplash.com/photo-1531545514256-b1400bc00f31?w=400&h=250&fit=crop',
   },
   {
     id: 6,
@@ -66,6 +72,7 @@ const allPrograms = [
     category: 'Producție',
     type: 'extindere',
     value: 'large',
+    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=250&fit=crop',
   },
   {
     id: 7,
@@ -76,6 +83,7 @@ const allPrograms = [
     category: 'Turism',
     type: 'extindere',
     value: 'medium',
+    image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=250&fit=crop',
   },
   {
     id: 8,
@@ -86,6 +94,7 @@ const allPrograms = [
     category: 'Export',
     type: 'extindere',
     value: 'medium',
+    image: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=400&h=250&fit=crop',
   },
 ];
 
@@ -93,11 +102,54 @@ const categories = ['Toate', 'Tehnologie', 'Agricultură', 'Social', 'Energie', 
 const types = ['Toate', 'startup', 'extindere', 'agricultură'];
 const values = ['Toate', 'small', 'medium', 'large'];
 
+type Program = typeof allPrograms[0];
+
 const Granturi = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Toate');
   const [selectedType, setSelectedType] = useState('Toate');
   const [selectedValue, setSelectedValue] = useState('Toate');
+  
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    company: '',
+    message: '',
+  });
+
+  const handleOpenModal = (program: Program) => {
+    setSelectedProgram(program);
+    setIsModalOpen(true);
+    setIsSubmitted(false);
+    setFormData({ name: '', email: '', phone: '', company: '', message: '' });
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedProgram(null);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate form submission
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    setIsSubmitting(false);
+    setIsSubmitted(true);
+  };
 
   const filteredPrograms = allPrograms.filter((program) => {
     const matchesSearch = program.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -196,14 +248,23 @@ const Granturi = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPrograms.map((program, index) => (
               <RevealOnScroll key={program.id} delay={index * 50}>
-                <div className="card-program h-full flex flex-col">
-                  <div className="p-6 flex-1">
-                    <div className="flex flex-wrap gap-2 mb-4">
+                <div className="card-program h-full flex flex-col group">
+                  {/* Program Image */}
+                  <div className="relative h-40 overflow-hidden">
+                    <img 
+                      src={program.image} 
+                      alt={program.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute top-4 left-4 flex flex-wrap gap-2">
                       <span className="badge-primary">{program.category}</span>
                       <span className="badge-secondary">{getTypeLabel(program.type)}</span>
                     </div>
+                  </div>
+                  <div className="p-6 flex-1">
                     <h3 className="text-xl font-semibold mb-3">{program.title}</h3>
-                    <p className="text-muted-foreground text-sm mb-4 line-clamp-3">{program.description}</p>
+                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{program.description}</p>
                     <div className="space-y-3 text-sm">
                       <div className="flex items-center gap-2">
                         <Coins className="w-4 h-4 text-secondary" />
@@ -216,17 +277,159 @@ const Granturi = () => {
                     </div>
                   </div>
                   <div className="p-4 pt-0">
-                    <Button asChild variant="outline" className="w-full group">
-                      <Link to={`/granturi/${program.id}`}>
-                        Detalii Program
-                        <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                      </Link>
+                    <Button 
+                      onClick={() => handleOpenModal(program)}
+                      className="w-full btn-primary group"
+                    >
+                      Aplică Acum
+                      <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </div>
                 </div>
               </RevealOnScroll>
             ))}
           </div>
+
+          {/* Application Modal */}
+          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="text-lg">
+                  {isSubmitted ? 'Cerere Trimisă!' : `Aplică la: ${selectedProgram?.title}`}
+                </DialogTitle>
+              </DialogHeader>
+              
+              {isSubmitted ? (
+                <div className="text-center py-6">
+                  <div className="w-14 h-14 rounded-full bg-secondary/10 flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="w-7 h-7 text-secondary" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-3">Mulțumim pentru aplicare!</h3>
+                  <p className="text-muted-foreground mb-6">
+                    Am primit cererea ta pentru programul <strong>{selectedProgram?.title}</strong>. 
+                    Te vom contacta în cel mai scurt timp posibil.
+                  </p>
+                  <Button onClick={handleCloseModal} className="btn-primary">
+                    Închide
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  {selectedProgram && (
+                    <div className="bg-muted rounded-xl p-4 mb-6">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Coins className="w-4 h-4 text-secondary" />
+                        <span className="font-semibold text-secondary">{selectedProgram.amount}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-warning" />
+                        <span className="text-sm text-muted-foreground">Deadline: {selectedProgram.deadline}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                      <label htmlFor="name" className="form-label">Nume complet *</label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className="form-input"
+                        required
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="email" className="form-label">Email *</label>
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          className="form-input"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="phone" className="form-label">Telefon *</label>
+                        <input
+                          type="tel"
+                          id="phone"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          className="form-input"
+                          placeholder="+373..."
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="company" className="form-label">Companie / Proiect</label>
+                      <input
+                        type="text"
+                        id="company"
+                        name="company"
+                        value={formData.company}
+                        onChange={handleInputChange}
+                        className="form-input"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="message" className="form-label">Descriere scurtă a proiectului</label>
+                      <textarea
+                        id="message"
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        rows={3}
+                        className="form-input resize-none"
+                        placeholder="Spune-ne câteva cuvinte despre ideea ta..."
+                      />
+                    </div>
+
+                    <div className="flex gap-3 pt-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleCloseModal}
+                        className="flex-1"
+                      >
+                        Anulează
+                      </Button>
+                      <Button
+                        type="submit"
+                        className="flex-1 btn-primary"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? (
+                          <span className="flex items-center gap-2">
+                            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                            </svg>
+                            Se trimite...
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-2">
+                            Trimite Cererea
+                            <Send className="w-4 h-4" />
+                          </span>
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </>
+              )}
+            </DialogContent>
+          </Dialog>
 
           {filteredPrograms.length === 0 && (
             <div className="text-center py-16">

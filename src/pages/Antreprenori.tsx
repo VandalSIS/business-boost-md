@@ -6,11 +6,35 @@ import Footer from '@/components/Footer';
 import RevealOnScroll from '@/components/RevealOnScroll';
 
 const eligibleApplicants = [
-  { icon: Building, text: 'Startup-uri și întreprinderi noi' },
-  { icon: Briefcase, text: 'IMM-uri existente în expansiune' },
-  { icon: Users, text: 'Microîntreprinderi și PFA-uri' },
-  { icon: Leaf, text: 'Fermieri și producători agricoli' },
-  { icon: Target, text: 'Antreprenori sociali' },
+  { icon: Building, text: 'Startup-uri și întreprinderi noi', image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=400&h=300&fit=crop' },
+  { icon: Briefcase, text: 'IMM-uri existente în expansiune', image: 'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=400&h=300&fit=crop' },
+  { icon: Users, text: 'Microîntreprinderi și PFA-uri', image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&h=300&fit=crop' },
+  { icon: Leaf, text: 'Fermieri și producători agricoli', image: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=400&h=300&fit=crop' },
+  { icon: Target, text: 'Antreprenori sociali', image: 'https://images.unsplash.com/photo-1531545514256-b1400bc00f31?w=400&h=300&fit=crop' },
+];
+
+const successStories = [
+  {
+    name: 'Maria Ciobanu',
+    business: 'Ferma Eco Moldova',
+    quote: 'Am primit 200.000 lei pentru extinderea fermei ecologice. Acum avem 3 angajați și exportăm în UE.',
+    image: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=200&h=200&fit=crop&crop=face',
+    amount: '200.000 lei',
+  },
+  {
+    name: 'Andrei Rusu',
+    business: 'TechStart Moldova',
+    quote: 'De la o idee la un startup cu 10 angajați în doar 18 luni, datorită finanțării primite.',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
+    amount: '350.000 lei',
+  },
+  {
+    name: 'Elena Moraru',
+    business: 'Atelier Creativ',
+    quote: 'Grantul m-a ajutat să-mi deschid atelierul de design. Acum am clienți din toată țara.',
+    image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&crop=face',
+    amount: '75.000 lei',
+  },
 ];
 
 const fundingTypes = [
@@ -81,14 +105,59 @@ const Antreprenori = () => {
             </p>
           </RevealOnScroll>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-6">
             {eligibleApplicants.map((item, index) => (
-              <RevealOnScroll key={item.text} delay={index * 80}>
-                <div className="flex items-center gap-4 p-6 bg-card rounded-2xl shadow-card border border-border/50 hover:shadow-card-hover hover:-translate-y-1 transition-all">
-                  <div className="icon-container">
-                    <item.icon className="w-6 h-6" />
+              <RevealOnScroll key={item.text} delay={index * 80} className="w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
+                <div className="bg-card rounded-2xl shadow-card border border-border/50 hover:shadow-card-hover hover:-translate-y-2 transition-all overflow-hidden group h-full">
+                  <div className="relative h-40 overflow-hidden">
+                    <img 
+                      src={item.image} 
+                      alt={item.text}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                          <item.icon className="w-5 h-5 text-white" />
+                        </div>
+                        <span className="font-semibold text-white">{item.text}</span>
+                      </div>
+                    </div>
                   </div>
-                  <span className="font-medium">{item.text}</span>
+                </div>
+              </RevealOnScroll>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Success Stories Section */}
+      <section className="section-padding bg-muted/50">
+        <div className="container-custom">
+          <RevealOnScroll className="text-center mb-16">
+            <span className="badge-secondary mb-4">Povești de Succes</span>
+            <h2 className="mb-4">Antreprenori Care Au Reușit</h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Descoperă cum am ajutat antreprenorii moldoveni să-și atingă obiectivele de finanțare.
+            </p>
+          </RevealOnScroll>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {successStories.map((story, index) => (
+              <RevealOnScroll key={story.name} delay={index * 100}>
+                <div className="bg-card rounded-2xl p-6 shadow-card border border-border/50 text-center">
+                  <img 
+                    src={story.image} 
+                    alt={story.name}
+                    className="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-secondary/20"
+                  />
+                  <div className="inline-block px-3 py-1 rounded-full bg-secondary/10 text-secondary text-sm font-semibold mb-3">
+                    {story.amount}
+                  </div>
+                  <h3 className="text-lg font-semibold mb-1">{story.name}</h3>
+                  <p className="text-sm text-muted-foreground mb-4">{story.business}</p>
+                  <p className="text-foreground italic">"{story.quote}"</p>
                 </div>
               </RevealOnScroll>
             ))}
@@ -134,6 +203,19 @@ const Antreprenori = () => {
                 Pentru a aplica la programele de finanțare, vei avea nevoie de următoarele documente. 
                 Echipa noastră te va ghida în pregătirea completă a dosarului.
               </p>
+              <div className="relative rounded-2xl overflow-hidden mb-8">
+                <img 
+                  src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&h=400&fit=crop"
+                  alt="Documente și consultanță"
+                  className="w-full h-64 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary/40 flex items-center justify-center">
+                  <div className="text-center text-white p-6">
+                    <p className="text-4xl font-bold mb-2">95%</p>
+                    <p className="text-lg">Rată de aprobare cu documentația noastră</p>
+                  </div>
+                </div>
+              </div>
               <Button asChild className="btn-primary px-8">
                 <Link to="/contacte">
                   Solicită Ghidare

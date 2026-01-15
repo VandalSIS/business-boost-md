@@ -331,15 +331,55 @@ const Contacte = () => {
 
               <RevealOnScroll delay={200}>
                 <div className="bg-card rounded-2xl p-8 shadow-card border border-border/50">
-                  <h3 className="text-xl font-semibold mb-4">Persoana de Contact</h3>
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-2xl font-bold text-primary">OB</span>
+                  <h3 className="text-xl font-semibold mb-4">Echipa Noastră</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <img 
+                        src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=face"
+                        alt="Olga Braga"
+                        className="w-14 h-14 rounded-full object-cover border-2 border-secondary/20"
+                      />
+                      <div>
+                        <p className="font-semibold">Olga Braga</p>
+                        <p className="text-sm text-muted-foreground">Consultant Principal</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-semibold text-lg">Olga Braga</p>
-                      <p className="text-muted-foreground">Consultant Principal</p>
+                    <div className="flex items-center gap-4">
+                      <img 
+                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face"
+                        alt="Alexandru Rusu"
+                        className="w-14 h-14 rounded-full object-cover border-2 border-secondary/20"
+                      />
+                      <div>
+                        <p className="font-semibold">Alexandru Rusu</p>
+                        <p className="text-sm text-muted-foreground">Expert Finanțări</p>
+                      </div>
                     </div>
+                    <div className="flex items-center gap-4">
+                      <img 
+                        src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=face"
+                        alt="Maria Ciobanu"
+                        className="w-14 h-14 rounded-full object-cover border-2 border-secondary/20"
+                      />
+                      <div>
+                        <p className="font-semibold">Maria Ciobanu</p>
+                        <p className="text-sm text-muted-foreground">Specialist Documentație</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </RevealOnScroll>
+
+              {/* Office Image */}
+              <RevealOnScroll delay={250}>
+                <div className="bg-card rounded-2xl overflow-hidden shadow-card border border-border/50">
+                  <img 
+                    src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=300&fit=crop"
+                    alt="Biroul nostru"
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="p-4 text-center">
+                    <p className="text-sm text-muted-foreground">Biroul nostru din Chișinău</p>
                   </div>
                 </div>
               </RevealOnScroll>
