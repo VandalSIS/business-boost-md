@@ -63,14 +63,14 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isScrolled ? 'bg-gradient-to-br from-primary to-accent' : 'bg-white/20 backdrop-blur-sm'}`}>
               <span className="text-white font-bold text-lg">CA</span>
             </div>
             <div className="flex flex-col">
-              <span className={`font-bold text-lg leading-tight ${isScrolled ? 'text-foreground' : 'text-white md:text-foreground'}`}>
+              <span className={`font-bold text-lg leading-tight ${isScrolled ? 'text-foreground' : 'text-white'}`}>
                 Consultanța
               </span>
-              <span className={`text-sm font-medium leading-tight ${isScrolled ? 'text-primary' : 'text-white/90 md:text-primary'}`}>
+              <span className={`text-sm font-medium leading-tight ${isScrolled ? 'text-primary' : 'text-white/80'}`}>
                 Afaceri
               </span>
             </div>
@@ -84,10 +84,10 @@ const Header = () => {
                 to={link.path}
                 className={`relative font-medium transition-colors link-underline ${
                   isActive(link.path)
-                    ? 'text-primary'
+                    ? isScrolled ? 'text-primary' : 'text-secondary'
                     : isScrolled
                     ? 'text-foreground hover:text-primary'
-                    : 'text-foreground hover:text-primary'
+                    : 'text-white/90 hover:text-white'
                 }`}
               >
                 {link.name}
@@ -97,7 +97,7 @@ const Header = () => {
 
           {/* CTA Button */}
           <div className="hidden lg:block">
-            <Button asChild className="btn-primary rounded-xl px-6">
+            <Button asChild className={`rounded-xl px-6 font-semibold transition-all ${isScrolled ? 'btn-primary' : 'bg-white text-primary hover:bg-white/90'}`}>
               <Link to="/contacte">Solicită Consultanță</Link>
             </Button>
           </div>
@@ -106,7 +106,7 @@ const Header = () => {
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className={`lg:hidden p-2 rounded-lg transition-colors ${
-              isScrolled ? 'text-foreground' : 'text-white md:text-foreground'
+              isScrolled ? 'text-foreground' : 'text-white'
             }`}
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
